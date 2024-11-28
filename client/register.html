@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Signup</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 flex items-center justify-center h-screen">
     <div class="bg-gray-800 text-white rounded-lg shadow-lg p-8 w-96">
-        <h1 class="text-2xl font-semibold text-center mb-6">Login</h1>
-        <form action="index.html">
+        <h1 class="text-2xl font-semibold text-center mb-6">Signup</h1>
+        <form action="#" method="POST">
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium">Name</label>
+                <input type="text" id="name" name="name" class="mt-1 w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter your name" required>
+            </div>
             <div class="mb-4">
                 <label for="username" class="block text-sm font-medium">Username</label>
                 <input type="text" id="username" name="username" class="mt-1 w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter your username" required>
@@ -18,12 +22,12 @@
                 <label for="password" class="block text-sm font-medium">Password</label>
                 <input type="password" id="password" name="password" class="mt-1 w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Enter your password" required>
             </div>
-            <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                Login
+            <button type="submit" href=index.html class="w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                Signup
             </button>
         </form>
         <p class="text-center text-sm text-gray-400 mt-6">
-            Don’t have an account? <a href="register.html" class="text-purple-400 hover:underline">Signup</a>
+            Have already an account? <a href="login.html" class="text-purple-400 hover:underline">Login</a>
         </p>
     </div>
 </body>
