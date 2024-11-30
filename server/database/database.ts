@@ -23,14 +23,16 @@ export class Database {
     await this.executeSQL(TWEET_TABLE)
   }
 
-  public executeSQL = async (query: string) => {
+  public async executeSQL(query: string, params: any[] = []): Promise<any> {
     try {
-      const conn = await this._pool.getConnection()
-      const res = await conn.query(query)
-      conn.end()
-      return res
+      const conn = await this._pool.getConnection();
+      console.log('Database connection established'); // Log zur Bestätigung der Verbindung
+      const res = await conn.query(query, params);
+      conn.release();
+      return res;
     } catch (err) {
-      console.log(err)
+      console.error('Database query error:', err); // SQL-Fehler loggen
+      throw err;
     }
   }
 }

@@ -1,62 +1,61 @@
-import express, { Express, Request, Response } from 'express'
-import { API } from './api'
-import http from 'http'
-import { resolve, dirname } from 'path'
-import { Database } from './database'
+import express, { Express, Request, Response } from 'express';
+import { API } from './api';
+import dotenv from 'dotenv';
+import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import { Database } from './database';
+
+dotenv.config();
+
+// Simuliert `__dirname` in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class Backend {
-  // Properties
-  private _app: Express
-  private _api: API
-  private _database: Database
-  private _env: string
+  public app: Express;
+  private _api: API;
+  private _database: Database;
+  private _env: string;
 
-  // Getters
-  public get app(): Express {
-    return this._app
-  }
-
-  public get api(): API {
-    return this._api
-  }
-
-  public get database(): Database {
-    return this._database
-  }
-
-
-  // Constructor
   constructor() {
-    this._app = express()
-    this._database = new Database()
-    this._api = new API(this._app)
-    this._env = process.env.NODE_ENV || 'development'
+    this.app = express();
+    this._database = new Database();
 
-    this.setupStaticFiles()
-    this.setupRoutes()
-    this.startServer()
+    // Middleware
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
+    // API-Endpunkte
+    this._api = new API(this.app);
+    this._env = process.env.NODE_ENV || 'development';
+
+    this.setupStaticFiles();
+    this.setupRoutes();
+    this.startServer();
   }
 
-  // Methods
   private setupStaticFiles(): void {
-    this._app.use(express.static('client'))
+    // Statische Dateien aus dem `client`-Ordner bereitstellen
+    this.app.use('/static', express.static(path.resolve(__dirname, '../client')));
   }
 
   private setupRoutes(): void {
-    this._app.get('/', (req: Request, res: Response) => {
-      const __dirname = resolve(dirname(''))
-      res.sendFile(__dirname + '/client/index.html')
-    })
+    this.app.get('/', (req: Request, res: Response) => {
+      const indexPath = path.resolve(__dirname, '../client/index.html');
+      res.sendFile(indexPath);
+    });
   }
 
   private startServer(): void {
-    if (this._env === 'production') {
-      http.createServer(this.app).listen(3000, () => {
-        console.log('Server is listening!')
-      })
-    }
+    const port = 4200;
+    http.createServer(this.app).listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+    });
   }
+  
 }
 
-const backend = new Backend()
-export const viteNodeApp = backend.app
+const backend = new Backend();
+export const viteNodeApp = backend.app;
