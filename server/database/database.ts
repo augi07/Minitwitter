@@ -4,7 +4,8 @@ import { USER_TABLE, TWEET_TABLE } from './schema'
 
 export class Database {
   // Properties
-  private _pool: Pool
+  private _pool: Pool;
+
   // Constructor
   constructor() {
     this._pool = mariadb.createPool({
@@ -13,26 +14,29 @@ export class Database {
       user: process.env.DB_USER || 'minitwitter',
       password: process.env.DB_PASSWORD || 'supersecret123',
       connectionLimit: 5,
-    })
-    this.initializeDBSchema()
-  }
-  // Methods
-  private initializeDBSchema = async () => {
-    console.log('Initializing DB schema...')
-    await this.executeSQL(USER_TABLE)
-    await this.executeSQL(TWEET_TABLE)
+    });
+    this.initializeDBSchema();
   }
 
-  public async executeSQL(query: string, params: any[] = []): Promise<any> {
+  // Methods
+  private async initializeDBSchema(): Promise<void> {
+    console.log('Initialisiere DB-Schema...');
+    await this.executeSQL(USER_TABLE);
+    await this.executeSQL(TWEET_TABLE);
+  }
+
+  public async executeSQL<T = any>(query: string, params: any[] = []): Promise<T[]> {
+    let conn;
     try {
-      const conn = await this._pool.getConnection();
-      console.log('Database connection established'); // Log zur Bestätigung der Verbindung
+      conn = await this._pool.getConnection();
+      console.log('Datenbankverbindung hergestellt');
       const res = await conn.query(query, params);
-      conn.release();
-      return res;
+      return res as T[];
     } catch (err) {
-      console.error('Database query error:', err); // SQL-Fehler loggen
+      console.error('Datenbankabfragefehler:', err);
       throw err;
+    } finally {
+      if (conn) conn.release();
     }
   }
 }
